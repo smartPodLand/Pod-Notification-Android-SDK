@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PodNotification</string>
+    <string name="socket_server_address">ws://172.16.110.235:8003/ws</string>
+    <string name="server_name">mnot</string>
+    <string name="sso_host">sso</string>
+    <string name="server_token">2233</string>
+</resources>
