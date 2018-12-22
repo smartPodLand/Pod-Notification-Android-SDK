@@ -30,9 +30,13 @@ public class PodServiceUtils {
 
     public static void startService(Context context, Async async){
         if (async.getState()==null || async.getState().equals("ASYNC_CLOSED")){
-            async.connect(PodNotify.getSocketServerAddress(),PodNotify.getAppId(),PodNotify.getServerName(),
-                    PodNotify.getToken(),PodNotify.getSsoHost(),PodNotify.getDeviceId());
-            async.addListener(new PodNotificationListener(context));
+            try {
+                async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
+                        PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
+                async.addListener(new PodNotificationListener(context));
+            } catch (Exception e){
+                Log.e("AsyncConnect", e.getMessage());
+            }
         }
     }
 
