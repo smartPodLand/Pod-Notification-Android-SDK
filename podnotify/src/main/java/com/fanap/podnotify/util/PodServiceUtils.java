@@ -29,23 +29,24 @@ public class PodServiceUtils {
     private static final String DEFAULT_ID = "DEFAULT";
 
     public static void startService(Context context, Async async){
-        if (async.getState()==null || async.getState().equals("ASYNC_CLOSED")){
-            try {
-                async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
-                        PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
-                async.addListener(new PodNotificationListener(context));
-            } catch (Exception e){
-                Log.e("AsyncConnect", e.getMessage());
+        if( async != null) {
+            async.setReconnectOnClose(true);
+            if (async.getState() == null || async.getState().equals("ASYNC_CLOSED")) {
+                try {
+                    async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
+                            PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
+                    async.addListener(new PodNotificationListener(context));
+                } catch (Exception e) {
+                    Log.e("AsyncConnect", e.getMessage());
+                }
             }
         }
     }
 
     public static void stopService(Async async) {
-//        try {
-//            async.closeSocket();
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
+        if( async != null) {
+            async.setReconnectOnClose(false);
+        }
     }
 
     public static void handShake(Context applicationContext, String messageId, String senderId, Content.Type type) {
