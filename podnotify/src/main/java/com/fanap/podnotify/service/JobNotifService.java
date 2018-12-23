@@ -31,7 +31,7 @@ public class JobNotifService extends JobService {
 
         PodServiceUtils.stopService(async);
 
-        jobFinished(jobParameters,true);
+//        jobFinished(jobParameters,true);
 
         return false;
     }

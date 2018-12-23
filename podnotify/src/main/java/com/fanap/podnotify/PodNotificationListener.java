@@ -50,10 +50,10 @@ public class PodNotificationListener implements AsyncListener {
             PodServiceUtils.callOnPeerIdChanged(context,connection,pid);
             SharedPreferences sharedPreferences = SharedPref.getInstance(context);
             String handShakeNeededKey = PodNotify.getAppId() + "handshaked";
-            if (sharedPreferences.getBoolean(handShakeNeededKey, true)) {
-                sharedPreferences.edit().putBoolean(handShakeNeededKey, false).apply();
+//            if (sharedPreferences.getBoolean(handShakeNeededKey, true)) {
+//                sharedPreferences.edit().putBoolean(handShakeNeededKey, false).apply();
                 PodServiceUtils.doFirstTimeHandShake(context);
-            }
+//            }
         }
     }
 

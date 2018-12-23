@@ -30,16 +30,19 @@ public class PodServiceUtils {
 
     public static void startService(Context context, Async async){
         if( async != null) {
-            async.setReconnectOnClose(true);
-            if (async.getState() == null || async.getState().equals("ASYNC_CLOSED")) {
                 try {
+                    if (async.getState() !=null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN") )) {
+                        try {
+                            async.logOut();
+                        } catch (Exception ignored) {
+                        }
+                    }
                     async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
                             PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
                     async.addListener(new PodNotificationListener(context));
                 } catch (Exception e) {
                     Log.e("AsyncConnect", e.getMessage());
                 }
-            }
         }
     }
 

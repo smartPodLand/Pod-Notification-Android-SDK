@@ -15,7 +15,16 @@ public class Content {
     private String info;
     private String appId;
     private String deviceId;
+    private String sdkType ;
 
+
+    public String getSdkType() {
+        return sdkType;
+    }
+
+    public void setSdkType(String sdkType) {
+        this.sdkType = sdkType;
+    }
 
     public enum Type{
         FIRST_TIME(0),
@@ -34,7 +43,9 @@ public class Content {
         }
     }
 
-    public Content(int type, String messageId, String senderId, String receiverId, String info, String token,String appId, String deviceId) {
+
+    public Content(int type, String messageId, String senderId, String receiverId, String info,
+                   String token, String appId, String deviceId,String sdkType) {
         this.type = type;
         this.messageId = messageId;
         this.senderId = senderId;
@@ -43,6 +54,7 @@ public class Content {
         this.token = token;
         this.appId = appId;
         this.deviceId = deviceId;
+        this.sdkType = sdkType;
 
     }
 
@@ -101,7 +113,7 @@ public class Content {
         }
 
         public Content build(){
-            return new Content(type,messageId,senderId,receiverId,info,token,appId,deviceId);
+            return new Content(type,messageId,senderId,receiverId,info,token,appId,deviceId,"ANDROID");
         }
     }
 

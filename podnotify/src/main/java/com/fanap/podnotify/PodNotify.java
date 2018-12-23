@@ -109,6 +109,7 @@ public class PodNotify {
             ComponentName componentName = new ComponentName(context, JobNotifService.class);
             JobInfo jobInfo = new JobInfo.Builder(NOTIF_JOB_ID, componentName)
                     .setPersisted(true)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setMinimumLatency(1000)
                     .build();
 
@@ -135,9 +136,9 @@ public class PodNotify {
                 .build();
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        if (jobScheduler != null && !jobScheduler.getAllPendingJobs().contains(myJob)) {
+//        if (jobScheduler != null && !jobScheduler.getAllPendingJobs().contains(myJob)) {
             jobScheduler.schedule(myJob);
-        }
+//        }
 
         try {
             Intent startServiceIntent = new Intent(context, NetworkSchedulerService.class);
