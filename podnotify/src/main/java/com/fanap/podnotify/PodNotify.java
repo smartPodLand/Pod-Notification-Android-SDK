@@ -109,7 +109,6 @@ public class PodNotify {
             ComponentName componentName = new ComponentName(context, JobNotifService.class);
             JobInfo jobInfo = new JobInfo.Builder(NOTIF_JOB_ID, componentName)
                     .setPersisted(true)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setMinimumLatency(1000)
                     .build();
 
@@ -129,6 +128,7 @@ public class PodNotify {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNetworkService(Context context) {
         JobInfo myJob = new JobInfo.Builder(SCHEDULER_JOB_ID, new ComponentName(context, NetworkSchedulerService.class))
+                .setRequiresCharging(true)
                 .setMinimumLatency(1000)
                 .setOverrideDeadline(2000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)

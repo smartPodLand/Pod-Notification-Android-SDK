@@ -14,6 +14,9 @@ import com.fanap.podnotify.service.NotifService;
 
 public class StartServiceReciver extends BroadcastReceiver {
 //    @SuppressLint("WrongConstant")
+
+    private static final int NOTIF_JOB_ID = 604;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -24,7 +27,7 @@ public class StartServiceReciver extends BroadcastReceiver {
         } else {
 
             ComponentName componentName = new ComponentName(context, JobNotifService.class);
-            JobInfo jobInfo = new JobInfo.Builder(12, componentName)
+            JobInfo jobInfo = new JobInfo.Builder(NOTIF_JOB_ID, componentName)
                     .setPersisted(true)
                     .setMinimumLatency(1000)
                     .build();
