@@ -36,10 +36,14 @@ public class PodServiceUtils {
                             async.logOut();
                         } catch (Exception ignored) {
                         }
+                        if (async.getState().equals("ASYNC_READY")) {
+                            async.removeListener(new PodNotificationListener(context));
+                            async.addListener(new PodNotificationListener(context));
+                        }
                     }
+
                     async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
                             PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
-                    async.addListener(new PodNotificationListener(context));
                 } catch (Exception e) {
                     Log.e("AsyncConnect", e.getMessage());
                 }

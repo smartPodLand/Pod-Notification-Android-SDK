@@ -16,8 +16,11 @@ import com.fanap.podnotify.receiver.ConnectivityReceiver;
 import com.fanap.podnotify.receiver.StartServiceReciver;
 
 /**
- * Created by Android Developer 1 on 4/11/2018.
+ * Created by arvin
+ * on Mon, 17 December 2018 at 12:45 PM.
+ * hi [at] arvinrokni [dot] ir
  */
+
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class NetworkSchedulerService extends JobService implements
@@ -33,16 +36,17 @@ public class NetworkSchedulerService extends JobService implements
         mConnectivityReceiver = new ConnectivityReceiver(this);
     }
 
-    /**
-     * When the app's NetworkConnectionActivity is created, it starts this service. This is so that the
-     * activity and this service can communicate back and forth. See "setUiCallback()"
-     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         return START_NOT_STICKY;
     }
 
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(mConnectivityReceiver);
+        super.onDestroy();
+    }
 
     @Override
     public boolean onStartJob(JobParameters params) {
@@ -65,6 +69,6 @@ public class NetworkSchedulerService extends JobService implements
     private void task() {
         Intent intent1 = new Intent(getApplicationContext(), StartServiceReciver.class);
         PendingIntent pendingIntent1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),pendingIntent1);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+100,pendingIntent1);
     }
 }

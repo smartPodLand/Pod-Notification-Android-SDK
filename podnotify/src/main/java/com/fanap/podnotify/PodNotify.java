@@ -20,6 +20,13 @@ import com.fanap.podnotify.service.NetworkSchedulerService;
 import com.fanap.podnotify.service.NotifService;
 import com.fanap.podnotify.util.SharedPref;
 
+/**
+ * Created by arvin
+ * on Mon, 17 December 2018 at 12:45 PM.
+ * hi [at] arvinrokni [dot] ir
+ */
+
+
 public class PodNotify {
 
     private static final String TAG = PodNotify.class.getSimpleName();
@@ -88,20 +95,16 @@ public class PodNotify {
     }
 
     public void start(Context context){
-        if (sharedPref.getBoolean("POD_NOTIFY_STARTED",false)){
-            sharedPref.edit().putBoolean("POD_NOTIFY_STARTED", true).apply();
-
-            scheduleService(context);
+//            scheduleService(context);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 scheduleNetworkService(context);
             }
 
-        }
     }
 
     private void scheduleService(Context context){
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Intent serviceIntent = new Intent(context, NotifService.class);
             context.stopService(serviceIntent);
             context.startService(serviceIntent);
@@ -115,6 +118,7 @@ public class PodNotify {
             JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
             int resultCode = 0;
             if (jobScheduler != null) {
+                jobScheduler.cancelAll();
                 resultCode = jobScheduler.schedule(jobInfo);
             }
             if (resultCode == JobScheduler.RESULT_SUCCESS) {
@@ -128,17 +132,14 @@ public class PodNotify {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNetworkService(Context context) {
         JobInfo myJob = new JobInfo.Builder(SCHEDULER_JOB_ID, new ComponentName(context, NetworkSchedulerService.class))
-                .setRequiresCharging(true)
                 .setMinimumLatency(1000)
-                .setOverrideDeadline(2000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPersisted(true)
                 .build();
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-//        if (jobScheduler != null && !jobScheduler.getAllPendingJobs().contains(myJob)) {
-            jobScheduler.schedule(myJob);
-//        }
+        jobScheduler.cancelAll();
+        jobScheduler.schedule(myJob);
 
         try {
             Intent startServiceIntent = new Intent(context, NetworkSchedulerService.class);
@@ -173,10 +174,12 @@ public class PodNotify {
     }
 
     public static void setApplication(Context context){
-        IntentFilter intentFilterNotif = new IntentFilter();
-        intentFilterNotif.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        intentFilterNotif.addAction("android.intent.action.BOOT_COMPLETED");
-        context.registerReceiver(new StartServiceReciver(), intentFilterNotif);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            IntentFilter intentFilterNotif = new IntentFilter();
+            intentFilterNotif.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            intentFilterNotif.addAction("android.intent.action.BOOT_COMPLETED");
+            context.registerReceiver(new StartServiceReciver(), intentFilterNotif);
+        }
     }
 
     public String getPeerId(Context context){

@@ -11,6 +11,13 @@ import com.fanap.podnotify.model.Notification;
 
 import org.json.JSONException;
 
+/**
+ * Created by arvin
+ * on Mon, 17 December 2018 at 12:45 PM.
+ * hi [at] arvinrokni [dot] ir
+ */
+
+
 public abstract class PodAbsMessagingService extends Service  {
 
     private static MyBinder myBinder = new MyBinder();
