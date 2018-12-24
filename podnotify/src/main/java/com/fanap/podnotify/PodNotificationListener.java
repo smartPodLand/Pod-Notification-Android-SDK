@@ -14,6 +14,12 @@ import com.fanap.podnotify.util.SharedPref;
 
 import java.io.IOException;
 
+/**
+ * Created by arvin
+ * on Mon, 24 December 2018 at 11:40 AM.
+ * hi [at] arvinrokni [dot] ir
+ */
+
 public class PodNotificationListener implements AsyncListener {
 
     private static final String TAG = PodNotificationListener.class.getSimpleName();
@@ -50,10 +56,10 @@ public class PodNotificationListener implements AsyncListener {
             PodServiceUtils.callOnPeerIdChanged(context,connection,pid);
             SharedPreferences sharedPreferences = SharedPref.getInstance(context);
             String handShakeNeededKey = PodNotify.getAppId() + "handshaked";
-//            if (sharedPreferences.getBoolean(handShakeNeededKey, true)) {
-//                sharedPreferences.edit().putBoolean(handShakeNeededKey, false).apply();
+            if (!sharedPreferences.getString(handShakeNeededKey, "").equals(pid)) {
+                sharedPreferences.edit().putString(handShakeNeededKey, pid).apply();
                 PodServiceUtils.doFirstTimeHandShake(context);
-//            }
+            }
         }
     }
 

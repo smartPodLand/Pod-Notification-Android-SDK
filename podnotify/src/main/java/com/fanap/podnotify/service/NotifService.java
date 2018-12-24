@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.fanap.podasync.Async;
+import com.fanap.podnotify.model.Notification;
 import com.fanap.podnotify.util.PodServiceUtils;
 
-
 /**
- * Created by Android Developer 1 on 11/21/2017.
+ * Created by arvin
+ * on Mon, 24 December 2018 at 11:40 AM.
+ * hi [at] arvinrokni [dot] ir
  */
-
 
 public class NotifService extends Service {
 
@@ -33,9 +34,14 @@ public class NotifService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        PodServiceUtils.startService(getApplicationContext(),async);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PodServiceUtils.startService(getApplicationContext(),async);
+            }
+        }).start();
 
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
 
@@ -46,7 +52,14 @@ public class NotifService extends Service {
 
     @Override
     public void onDestroy() {
-        PodServiceUtils.stopService(async);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PodServiceUtils.stopService(async);
+                Intent broadcastIntent = new Intent("com.fanap.podnotify.RestartNotifService");
+                sendBroadcast(broadcastIntent);
+            }
+        }).start();
     }
 
 }

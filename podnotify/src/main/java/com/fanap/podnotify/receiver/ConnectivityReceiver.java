@@ -5,7 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-
+/**
+ * Created by arvin
+ * on Mon, 24 December 2018 at 11:40 AM.
+ * hi [at] arvinrokni [dot] ir
+ */
 public class ConnectivityReceiver extends BroadcastReceiver {
 
     private ConnectivityReceiverListener mConnectivityReceiverListener;

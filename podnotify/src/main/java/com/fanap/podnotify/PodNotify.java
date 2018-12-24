@@ -1,5 +1,6 @@
 package com.fanap.podnotify;
 
+import android.app.ActivityManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.arch.lifecycle.LiveData;
@@ -19,6 +20,12 @@ import com.fanap.podnotify.service.JobNotifService;
 import com.fanap.podnotify.service.NetworkSchedulerService;
 import com.fanap.podnotify.service.NotifService;
 import com.fanap.podnotify.util.SharedPref;
+
+/**
+ * Created by arvin
+ * on Mon, 24 December 2018 at 11:40 AM.
+ * hi [at] arvinrokni [dot] ir
+ */
 
 public class PodNotify {
 
@@ -87,24 +94,32 @@ public class PodNotify {
         sharedPrefEditor.apply();
     }
 
-    public void start(Context context){
-        if (sharedPref.getBoolean("POD_NOTIFY_STARTED",false)){
-            sharedPref.edit().putBoolean("POD_NOTIFY_STARTED", true).apply();
+    public void start(Context context) {
+//        if (sharedPref.getBoolean("POD_NOTIFY_STARTED",false)){
+//            sharedPref.edit().putBoolean("POD_NOTIFY_STARTED", true).apply();
+        scheduleService(context);
 
-            scheduleService(context);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                scheduleNetworkService(context);
-            }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            scheduleNetworkService(context);
         }
     }
 
+    private boolean isMyServiceRunning(Context context, Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void scheduleService(Context context){
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            Intent serviceIntent = new Intent(context, NotifService.class);
-            context.stopService(serviceIntent);
-            context.startService(serviceIntent);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            if (!isMyServiceRunning(context,NotifService.class)) {
+                Intent serviceIntent = new Intent(context, NotifService.class);
+                context.startService(serviceIntent);
+            }
         } else {
             ComponentName componentName = new ComponentName(context, JobNotifService.class);
             JobInfo jobInfo = new JobInfo.Builder(NOTIF_JOB_ID, componentName)
@@ -128,24 +143,13 @@ public class PodNotify {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNetworkService(Context context) {
         JobInfo myJob = new JobInfo.Builder(SCHEDULER_JOB_ID, new ComponentName(context, NetworkSchedulerService.class))
-                .setRequiresCharging(true)
                 .setMinimumLatency(1000)
-                .setOverrideDeadline(2000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPersisted(true)
                 .build();
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-//        if (jobScheduler != null && !jobScheduler.getAllPendingJobs().contains(myJob)) {
             jobScheduler.schedule(myJob);
-//        }
-
-        try {
-            Intent startServiceIntent = new Intent(context, NetworkSchedulerService.class);
-            context.startService(startServiceIntent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static String getSocketServerAddress() {

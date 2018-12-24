@@ -7,6 +7,12 @@ import android.app.job.JobService;
 import com.fanap.podasync.Async;
 import com.fanap.podnotify.util.PodServiceUtils;
 
+/**
+ * Created by arvin
+ * on Mon, 24 December 2018 at 11:40 AM.
+ * hi [at] arvinrokni [dot] ir
+ */
+
 @SuppressLint("NewApi")
 public class JobNotifService extends JobService {
 
@@ -18,7 +24,12 @@ public class JobNotifService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
 
-        PodServiceUtils.startService(getApplicationContext(),async);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PodServiceUtils.startService(getApplicationContext(),async);
+            }
+        }).start();
 
         return true;
     }
@@ -28,10 +39,14 @@ public class JobNotifService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
-
-        PodServiceUtils.stopService(async);
-
-        return false;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PodServiceUtils.stopService(async);
+            }
+        }).start();
+        jobFinished(jobParameters,true);
+        return true;
     }
 
     @Override
