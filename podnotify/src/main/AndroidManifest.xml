@@ -37,6 +37,16 @@
             android:enabled="true"
             android:exported="true" />
 
+        <receiver
+            android:name=".receiver.SensorRestarterBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.fanap.podnotify.RestartNotifService" />
+            </intent-filter>
+        </receiver>
+
+
         <service
             android:name=".service.NotifService"
             android:enabled="true"

@@ -53,6 +53,12 @@ public class PodServiceUtils {
     public static void stopService(Async async) {
         if( async != null) {
             async.setReconnectOnClose(false);
+            if (async.getState() !=null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN") )) {
+                try {
+                    async.logOut();
+                } catch (Exception ignored) {
+                }
+            }
         }
     }
 
