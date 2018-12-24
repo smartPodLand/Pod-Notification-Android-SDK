@@ -95,7 +95,7 @@ public class PodNotify {
     }
 
     public void start(Context context){
-//            scheduleService(context);
+            scheduleService(context);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 scheduleNetworkService(context);
