@@ -11,17 +11,20 @@ import com.fanap.podnotify.PodNotify;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView textView;
+    private TextView peerId;
+    private TextView deviceId;
+    private TextView appId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        peerId = findViewById(R.id.peer_id);
+        appId = findViewById(R.id.app_id);
+        deviceId = findViewById(R.id.device_id);
 
-        textView = findViewById(R.id.textview);
-
-        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        final String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         final PodNotify podNotify = new PodNotify.builder()
                 .setAppId(getApplicationContext().getPackageName())
@@ -38,9 +41,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable String s) {
                 MainActivity.this.setTitle(s);
-                if (podNotify.getPeerId(getApplicationContext())!=null)
-                    textView.setText(podNotify.getPeerId(getApplicationContext()));
+                if (podNotify.getPeerId(getApplicationContext())!=null) {
+                    peerId.setText("peerId: " + podNotify.getPeerId(getApplicationContext()));
+                    appId.setText("appId: " + podNotify.getAppId());
+                    deviceId.setText("deviceId: " + androidId);
+                }
             }
         });
+
+
     }
 }

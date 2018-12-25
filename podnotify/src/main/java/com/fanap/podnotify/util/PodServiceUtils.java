@@ -38,19 +38,20 @@ public class PodServiceUtils {
             }
             async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
                     PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
-            async.setReconnectOnClose(true);
+//            async.setReconnectOnClose(true);
         }
     }
 
     public static void stopService(Async async) {
         if (async != null) {
-            async.setReconnectOnClose(false);
-//            if (async.getState() != null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN"))) {
-//                try {
-//                    async.logOut();
-//                } catch (Exception ignored) {
-//                }
-//            }
+//            async.setReconnectOnClose(false);
+            if (async.getState() != null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN"))) {
+                try {
+                    async.closeSocket();
+                } catch (Exception ignored) {
+                }
+            }
+
         }
     }
 
