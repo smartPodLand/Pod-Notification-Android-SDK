@@ -9,10 +9,9 @@ import com.fanap.podnotify.model.Notification;
 import com.fanap.podnotify.util.PodServiceUtils;
 
 /**
- * Created by arvin
+ * Created by ArvinRokni
  * on Mon, 17 December 2018 at 12:45 PM.
- * hi [at] arvinrokni [dot] ir
- */
+*/
 
 
 @SuppressLint("NewApi")

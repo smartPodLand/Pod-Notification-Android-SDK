@@ -1,10 +1,9 @@
 package com.fanap.podnotify.model;
 
 /**
- * Created by arvin
+ * Created by ArvinRokni
  * on Mon, 17 December 2018 at 12:09 PM.
- * hi [at] arvinrokni [dot] ir
- */
+*/
 public class Info {
 
     private Double lat;

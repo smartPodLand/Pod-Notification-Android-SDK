@@ -8,10 +8,9 @@ import android.os.IBinder;
 import com.fanap.podnotify.model.ExtraConst.Constants;
 
 /**
- * Created by arvin
+ * Created by ArvinRokni
  * on Mon, 17 December 2018 at 12:45 PM.
- * hi [at] arvinrokni [dot] ir
- */
+*/
 
 
 public abstract class PodAbsInstanceIdService extends Service {

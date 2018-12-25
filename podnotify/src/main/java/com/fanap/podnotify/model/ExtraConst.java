@@ -6,10 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by arvin
+ * Created by ArvinRokni
  * on Sun, 09 December 2018 at 5:57 PM.
- * hi [at] arvinrokni [dot] ir
- */
+*/
 public abstract class ExtraConst {
 
     private final String value;

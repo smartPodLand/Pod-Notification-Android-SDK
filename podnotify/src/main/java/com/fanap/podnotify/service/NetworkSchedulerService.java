@@ -16,10 +16,9 @@ import com.fanap.podnotify.receiver.ConnectivityReceiver;
 import com.fanap.podnotify.receiver.StartServiceReciver;
 
 /**
- * Created by arvin
+ * Created by ArvinRokni
  * on Mon, 17 December 2018 at 12:45 PM.
- * hi [at] arvinrokni [dot] ir
- */
+*/
 
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)

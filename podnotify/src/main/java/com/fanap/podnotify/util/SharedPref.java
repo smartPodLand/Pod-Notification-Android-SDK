@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
- * Created by arvin
+ * Created by ArvinRokni
  * on Mon, 24 December 2018 at 11:40 AM.
- * hi [at] arvinrokni [dot] ir
- */
+*/
 
 public class SharedPref {
 
