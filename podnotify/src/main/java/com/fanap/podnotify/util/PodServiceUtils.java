@@ -30,20 +30,12 @@ public class PodServiceUtils {
 
     public static void startService(Context context, Async async) {
         if (async != null) {
-            if (async.getState() != null && (async.getState().equals("ASYNC_READY"))) {
-                try {
-                    async.logOut();
-                } catch (Exception ignored) {
-                    Log.w(TAG,"Async can't logged out! but it's no problem!");
-                }
-            } else if (async.getState() != null && async.getState().equals("OPEN")){
-                try {
-                    async.closeSocket();
-                } catch (Exception ignored) {
-                    Log.w(TAG,"Async can't close twice! but it's no problem!");
-                }
+            try {
+                async.logOut();
+            } catch (Exception ignored) {
+                Log.w(TAG, "Async can't logged out! but it's no problem!");
+                async.addListener(new PodNotificationListener(context));
             }
-            async.addListener(new PodNotificationListener(context));
             async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
                     PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
         }
