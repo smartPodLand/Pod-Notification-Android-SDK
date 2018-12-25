@@ -28,32 +28,26 @@ public class PodServiceUtils {
     private static final String TAG = PodServiceUtils.class.getSimpleName();
     private static final String DEFAULT_ID = "DEFAULT";
 
-    public static void startService(Context context, Async async){
-        if( async != null) {
-                try {
-                    if (async.getState() !=null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN") )) {
-                        try {
-                            async.logOut();
-                        } catch (Exception ignored) {
-                        }
-                        if (async.getState().equals("ASYNC_READY")) {
-                            async.removeListener(new PodNotificationListener(context));
-                            async.addListener(new PodNotificationListener(context));
-                        }
-                    }
+    public static void startService(Context context, Async async) {
+        if (async != null) {
 
-                    async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
-                            PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
-                } catch (Exception e) {
-                    Log.e("AsyncConnect", e.getMessage());
+            if (async.getState() != null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN"))) {
+                try {
+                    async.logOut();
+                } catch (Exception ignored) {
                 }
+            }
+            async.addListener(new PodNotificationListener(context));
+            async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
+                    PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
+
         }
     }
 
     public static void stopService(Async async) {
-        if( async != null) {
+        if (async != null) {
             async.setReconnectOnClose(false);
-            if (async.getState() !=null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN") )) {
+            if (async.getState() != null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN"))) {
                 try {
                     async.logOut();
                 } catch (Exception ignored) {
@@ -65,7 +59,7 @@ public class PodServiceUtils {
     public static void handShake(Context applicationContext, String messageId, String senderId, Content.Type type) {
         Async async = Async.getInstance(applicationContext);
         async.sendMessage(
-                makeRequest(messageId,async.getPeerId(),senderId,type),
+                makeRequest(messageId, async.getPeerId(), senderId, type),
                 AsyncMessageType.MessageType.MESSAGE_ACK_NEEDED);
 
         Log.i(TAG, "message sent.");
@@ -92,14 +86,14 @@ public class PodServiceUtils {
                 .setServiceName("SetStatusPush"));
     }
 
-    public static int showNotification(Context context,Notification notification) {
+    public static int showNotification(Context context, Notification notification) {
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O
-                && !SharedPref.getInstance(context).getBoolean(Constants.CHANNEL_CREATED,false)) {
+                && !SharedPref.getInstance(context).getBoolean(Constants.CHANNEL_CREATED, false)) {
 
-            SharedPref.getInstance(context).edit().putBoolean(Constants.CHANNEL_CREATED,true).apply();
+            SharedPref.getInstance(context).edit().putBoolean(Constants.CHANNEL_CREATED, true).apply();
 
             NotificationChannel channel = new NotificationChannel(DEFAULT_ID,
                     "DEFAULT", NotificationManager.IMPORTANCE_DEFAULT);
@@ -118,17 +112,18 @@ public class PodServiceUtils {
         return notificationId;
     }
 
-    public static void callOnMessageReceived(Context context,ServiceConnection connection,String textMessage) {
+    public static void callOnMessageReceived(Context context, ServiceConnection connection, String textMessage) {
         Intent intent = new Intent(Constants.SERVICE_MESSAGE_EVENT);
         intent.setPackage(context.getPackageName());
         intent.putExtra(Constants.MESSAGE_DATA_KEY, textMessage);
         try {
             context.unbindService(connection);
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
         context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
-    public static void callOnPeerIdChanged(Context context,ServiceConnection connection, String peerId) {
+    public static void callOnPeerIdChanged(Context context, ServiceConnection connection, String peerId) {
 
         Intent intent = new Intent(Constants.SERVICE_INSTANCE_ID_EVENT);
         intent.setPackage(context.getPackageName());
@@ -138,12 +133,13 @@ public class PodServiceUtils {
                 .putString(Constants.PEER_ID_DATA_KEY, peerId).apply();
         try {
             context.unbindService(connection);
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
         context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
 
     }
 
     public static void doFirstTimeHandShake(Context context) {
-        handShake(context,null,null,Content.Type.FIRST_TIME);
+        handShake(context, null, null, Content.Type.FIRST_TIME);
     }
 }
