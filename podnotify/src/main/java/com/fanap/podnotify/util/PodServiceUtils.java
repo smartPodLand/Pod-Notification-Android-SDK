@@ -30,7 +30,6 @@ public class PodServiceUtils {
 
     public static void startService(Context context, Async async) {
         if (async != null) {
-
             if (async.getState() != null && (async.getState().equals("ASYNC_READY"))) {
                 try {
                     async.logOut();

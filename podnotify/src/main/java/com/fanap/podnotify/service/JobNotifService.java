@@ -19,37 +19,29 @@ import com.fanap.podnotify.util.PodServiceUtils;
 public class JobNotifService extends JobService {
 
     private Async async;
-    private Thread thread;
-    private boolean isRunning = false;
 
     public JobNotifService() {
     }
 
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
-        thread = new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                if (isRunning) {
-                    isRunning = false;
-                    PodServiceUtils.stopService(async);
-                    jobFinished(jobParameters, true);
-                } else {
-                    isRunning = true;
                     PodServiceUtils.startService(getApplicationContext(), async);
-                }
             }
-        });
-        thread.start();
+        }).start();
         return true;
     }
 
     @Override
     public boolean onStopJob(final JobParameters jobParameters) {
-
-        if (thread != null)
-            thread.start();
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PodServiceUtils.stopService(async);
+            }
+        }).start();
         return true;
     }
 
