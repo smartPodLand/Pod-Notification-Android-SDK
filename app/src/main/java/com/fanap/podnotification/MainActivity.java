@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
                 .setSocketServerAddress(getString(R.string.socket_server_address))
                 .setSsoHost(getString(R.string.sso_host))
                 .setToken(getString(R.string.server_token))
-                .setDeviceId(androidId)
+//                .setDeviceId(androidId)
                 .build(getApplicationContext());
 
         podNotify.start(getApplicationContext());
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 if (podNotify.getPeerId(getApplicationContext())!=null) {
                     peerId.setText("peerId: " + podNotify.getPeerId(getApplicationContext()));
                     appId.setText("appId: " + podNotify.getAppId());
-                    deviceId.setText("deviceId: " + androidId);
+                    deviceId.setText("deviceId: " + podNotify.getDeviceId());
                 }
             }
         });

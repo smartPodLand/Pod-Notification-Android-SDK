@@ -38,6 +38,7 @@ public class PodServiceUtils {
             }
             async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
                     PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
+//            async.setDeviceID(PodNotify.getDeviceId(context));
 //            async.setReconnectOnClose(true);
         }
     }

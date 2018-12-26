@@ -14,6 +14,7 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.fanap.podasync.Async;
+import com.fanap.podasync.model.AsyncConstant;
 import com.fanap.podnotify.receiver.StartServiceReciver;
 import com.fanap.podnotify.service.JobNotifService;
 import com.fanap.podnotify.service.NetworkSchedulerService;
@@ -41,7 +42,7 @@ public class PodNotify {
         private String serverName;
         private String token;
         private String ssoHost;
-        private String deviceId;
+//        private String deviceId;
 
         public builder setSocketServerAddress(String socketServerAddress) {
             this.socketServerAddress = socketServerAddress;
@@ -68,18 +69,18 @@ public class PodNotify {
             return this;
         }
 
-        public builder setDeviceId(String deviceId) {
-            this.deviceId = deviceId;
-            return this;
-        }
+//        public builder setDeviceId(String deviceId) {
+//            this.deviceId = deviceId;
+//            return this;
+//        }
 
         public PodNotify build(Context context){
-            return new PodNotify(context,socketServerAddress,appId,serverName,token,ssoHost,deviceId);
+            return new PodNotify(context,socketServerAddress,appId,serverName,token,ssoHost);
         }
     }
 
     private PodNotify(Context context, String socketServerAddress, String appId, String serverName,
-                     String token, String ssoHost, String deviceId) {
+                     String token, String ssoHost) {
         sharedPref = SharedPref.getInstance(context);
         SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
 
@@ -88,7 +89,9 @@ public class PodNotify {
         sharedPrefEditor.putString("serverName", serverName);
         sharedPrefEditor.putString("token", token);
         sharedPrefEditor.putString("ssoHost", ssoHost);
-        sharedPrefEditor.putString("deviceId", deviceId);
+        sharedPrefEditor.putString("deviceId",
+                context.getSharedPreferences(
+                        AsyncConstant.Constants.PREFERENCE,Context.MODE_PRIVATE).getString(AsyncConstant.Constants.DEVICE_ID,null));
 
         sharedPrefEditor.apply();
     }
