@@ -24,15 +24,12 @@ public class MainActivity extends AppCompatActivity {
         appId = findViewById(R.id.app_id);
         deviceId = findViewById(R.id.device_id);
 
-        final String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
         final PodNotify podNotify = new PodNotify.builder()
                 .setAppId(getApplicationContext().getPackageName())
                 .setServerName(getString(R.string.server_name))
                 .setSocketServerAddress(getString(R.string.socket_server_address))
                 .setSsoHost(getString(R.string.sso_host))
                 .setToken(getString(R.string.server_token))
-//                .setDeviceId(androidId)
                 .build(getApplicationContext());
 
         podNotify.start(getApplicationContext());
