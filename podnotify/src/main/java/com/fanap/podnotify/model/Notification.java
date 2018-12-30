@@ -3,10 +3,9 @@ package com.fanap.podnotify.model;
 import java.util.Map;
 
 /**
- * Created by arvin
+ * Created by ArvinRokni
  * on Sun, 16 December 2018 at 9:59 AM.
- * hi [at] arvinrokni [dot] ir
- */
+*/
 public class Notification {
 
     private String title;

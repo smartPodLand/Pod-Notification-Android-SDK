@@ -6,22 +6,10 @@ import android.text.TextUtils;
 import com.fanap.podnotify.model.Info;
 
 /**
- * Created by arvin
+ * Created by ArvinRokni
  * on Mon, 17 December 2018 at 10:01 AM.
- * hi [at] arvinrokni [dot] ir
- */
+*/
 public class InfoUtils {
-
-//    public static Location getLocation(Context context) {
-//        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-//        Criteria criteria = new Criteria();
-//        String bestProvider = locationManager.getBestProvider(criteria, true);
-//        Location location = null;
-//        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-//                == PackageManager.PERMISSION_GRANTED)
-//        location = locationManager.getLastKnownLocation(bestProvider);
-//        return location;
-//    }
 
     public static Info creator(){
 

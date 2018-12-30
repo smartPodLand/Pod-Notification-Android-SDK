@@ -14,11 +14,18 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.fanap.podasync.Async;
+import com.fanap.podasync.model.AsyncConstant;
 import com.fanap.podnotify.receiver.StartServiceReciver;
 import com.fanap.podnotify.service.JobNotifService;
 import com.fanap.podnotify.service.NetworkSchedulerService;
 import com.fanap.podnotify.service.NotifService;
 import com.fanap.podnotify.util.SharedPref;
+
+/**
+ * Created by ArvinRokni
+ * on Mon, 17 December 2018 at 12:45 PM.
+*/
+
 
 public class PodNotify {
 
@@ -35,7 +42,7 @@ public class PodNotify {
         private String serverName;
         private String token;
         private String ssoHost;
-        private String deviceId;
+//        private String deviceId;
 
         public builder setSocketServerAddress(String socketServerAddress) {
             this.socketServerAddress = socketServerAddress;
@@ -62,18 +69,18 @@ public class PodNotify {
             return this;
         }
 
-        public builder setDeviceId(String deviceId) {
-            this.deviceId = deviceId;
-            return this;
-        }
+//        public builder setDeviceId(String deviceId) {
+//            this.deviceId = deviceId;
+//            return this;
+//        }
 
         public PodNotify build(Context context){
-            return new PodNotify(context,socketServerAddress,appId,serverName,token,ssoHost,deviceId);
+            return new PodNotify(context,socketServerAddress,appId,serverName,token,ssoHost);
         }
     }
 
     private PodNotify(Context context, String socketServerAddress, String appId, String serverName,
-                     String token, String ssoHost, String deviceId) {
+                     String token, String ssoHost) {
         sharedPref = SharedPref.getInstance(context);
         SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
 
@@ -82,26 +89,24 @@ public class PodNotify {
         sharedPrefEditor.putString("serverName", serverName);
         sharedPrefEditor.putString("token", token);
         sharedPrefEditor.putString("ssoHost", ssoHost);
-        sharedPrefEditor.putString("deviceId", deviceId);
+        sharedPrefEditor.putString("deviceId",
+                context.getSharedPreferences(
+                        AsyncConstant.Constants.PREFERENCE,Context.MODE_PRIVATE).getString(AsyncConstant.Constants.DEVICE_ID,null));
 
         sharedPrefEditor.apply();
     }
 
     public void start(Context context){
-        if (sharedPref.getBoolean("POD_NOTIFY_STARTED",false)){
-            sharedPref.edit().putBoolean("POD_NOTIFY_STARTED", true).apply();
-
             scheduleService(context);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 scheduleNetworkService(context);
             }
 
-        }
     }
 
     private void scheduleService(Context context){
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Intent serviceIntent = new Intent(context, NotifService.class);
             context.stopService(serviceIntent);
             context.startService(serviceIntent);
@@ -115,6 +120,7 @@ public class PodNotify {
             JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
             int resultCode = 0;
             if (jobScheduler != null) {
+                jobScheduler.cancelAll();
                 resultCode = jobScheduler.schedule(jobInfo);
             }
             if (resultCode == JobScheduler.RESULT_SUCCESS) {
@@ -128,17 +134,14 @@ public class PodNotify {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNetworkService(Context context) {
         JobInfo myJob = new JobInfo.Builder(SCHEDULER_JOB_ID, new ComponentName(context, NetworkSchedulerService.class))
-                .setRequiresCharging(true)
                 .setMinimumLatency(1000)
-                .setOverrideDeadline(2000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPersisted(true)
                 .build();
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-//        if (jobScheduler != null && !jobScheduler.getAllPendingJobs().contains(myJob)) {
-            jobScheduler.schedule(myJob);
-//        }
+        jobScheduler.cancelAll();
+        jobScheduler.schedule(myJob);
 
         try {
             Intent startServiceIntent = new Intent(context, NetworkSchedulerService.class);
@@ -173,10 +176,12 @@ public class PodNotify {
     }
 
     public static void setApplication(Context context){
-        IntentFilter intentFilterNotif = new IntentFilter();
-        intentFilterNotif.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        intentFilterNotif.addAction("android.intent.action.BOOT_COMPLETED");
-        context.registerReceiver(new StartServiceReciver(), intentFilterNotif);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            IntentFilter intentFilterNotif = new IntentFilter();
+            intentFilterNotif.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            intentFilterNotif.addAction("android.intent.action.BOOT_COMPLETED");
+            context.registerReceiver(new StartServiceReciver(), intentFilterNotif);
+        }
     }
 
     public String getPeerId(Context context){

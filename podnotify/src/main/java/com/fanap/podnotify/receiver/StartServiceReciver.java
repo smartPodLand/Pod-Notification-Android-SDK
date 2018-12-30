@@ -12,15 +12,20 @@ import android.util.Log;
 import com.fanap.podnotify.service.JobNotifService;
 import com.fanap.podnotify.service.NotifService;
 
+/**
+ * Created by ArvinRokni
+ * on Mon, 17 December 2018 at 12:45 PM.
+*/
+
+
 public class StartServiceReciver extends BroadcastReceiver {
-//    @SuppressLint("WrongConstant")
 
     private static final int NOTIF_JOB_ID = 604;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Intent serviceIntent = new Intent(context, NotifService.class);
             context.stopService(serviceIntent);
             context.startService(serviceIntent);
@@ -31,11 +36,11 @@ public class StartServiceReciver extends BroadcastReceiver {
                     .setPersisted(true)
                     .setMinimumLatency(1000)
                     .build();
-            JobScheduler jobScheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            int resultCode = 0;
-            if (jobScheduler != null && !jobScheduler.getAllPendingJobs().contains(jobInfo)) {
-                resultCode = jobScheduler.schedule(jobInfo);
-            }
+            JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+            jobScheduler.cancelAll();
+            int resultCode = jobScheduler.schedule(jobInfo);
+
             if (resultCode == JobScheduler.RESULT_SUCCESS) {
                 Log.d("job", "Job scheduled!");
             } else {

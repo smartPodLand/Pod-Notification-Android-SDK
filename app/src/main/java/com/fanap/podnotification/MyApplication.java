@@ -10,7 +10,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        PodNotify.setApplication(this);
+//        PodNotify.setApplication(this);
 
     }
 
