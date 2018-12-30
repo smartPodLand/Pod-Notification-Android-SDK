@@ -58,13 +58,13 @@ public class NetworkSchedulerService extends JobService implements
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
-        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         task();
     }
 
     private void task() {
         Intent intent1 = new Intent(getApplicationContext(), StartServiceReciver.class);
         PendingIntent pendingIntent1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),pendingIntent1);
     }
 }

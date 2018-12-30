@@ -27,6 +27,8 @@ public class PodServiceUtils {
 
     private static final String TAG = PodServiceUtils.class.getSimpleName();
     private static final String DEFAULT_ID = "DEFAULT";
+    private static final String SET_STATUS_PUSH = "SetStatusPush";
+    private static final int MESSAGE_TYPE= 547;
 
     public static void startService(Context context, Async async){
         if( async != null) {
@@ -35,11 +37,11 @@ public class PodServiceUtils {
                         try {
                             async.logOut();
                         } catch (Exception ignored) {
+                            async.addListener(new PodNotificationListener(context));
                         }
                     }
                     async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
                             PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
-                    async.addListener(new PodNotificationListener(context));
                 } catch (Exception e) {
                     Log.e("AsyncConnect", e.getMessage());
                 }
@@ -78,8 +80,8 @@ public class PodServiceUtils {
                                         .setAppId(PodNotify.getAppId())
                                         .setDeviceId(PodNotify.getDeviceId())
                                         .build()))
-                .setMessageType(547)
-                .setServiceName("SetStatusPush"));
+                .setMessageType(MESSAGE_TYPE)
+                .setServiceName(SET_STATUS_PUSH));
     }
 
     public static int showNotification(Context context,Notification notification) {
