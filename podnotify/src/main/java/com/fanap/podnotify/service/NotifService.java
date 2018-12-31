@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.fanap.podasync.Async;
+import com.fanap.podnotify.model.ExtraConst;
 import com.fanap.podnotify.util.PodServiceUtils;
 
 
@@ -43,7 +44,7 @@ public class NotifService extends Service {
             }
         }).start();
 
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
 
@@ -60,6 +61,10 @@ public class NotifService extends Service {
                 PodServiceUtils.stopService(async);
             }
         }).start();
+
+        Intent broadcastIntent = new Intent(ExtraConst.Constants.SERVICE_RESTART_EVENT);
+        broadcastIntent.setPackage(getApplicationContext().getPackageName());
+        sendBroadcast(broadcastIntent);
 
     }
 

@@ -38,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable String s) {
                 MainActivity.this.setTitle(s);
+                deviceId.setText("deviceId: " + podNotify.getDeviceId(MainActivity.this));
                 if (podNotify.getPeerId(getApplicationContext())!=null) {
                     peerId.setText("peerId: " + podNotify.getPeerId(getApplicationContext()));
                     appId.setText("appId: " + podNotify.getAppId());
-                    deviceId.setText("deviceId: " + podNotify.getDeviceId());
                 }
             }
         });

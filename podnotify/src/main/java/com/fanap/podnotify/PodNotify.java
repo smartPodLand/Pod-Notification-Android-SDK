@@ -89,10 +89,6 @@ public class PodNotify {
         sharedPrefEditor.putString("serverName", serverName);
         sharedPrefEditor.putString("token", token);
         sharedPrefEditor.putString("ssoHost", ssoHost);
-        sharedPrefEditor.putString("deviceId",
-                context.getSharedPreferences(
-                        AsyncConstant.Constants.PREFERENCE,Context.MODE_PRIVATE).getString(AsyncConstant.Constants.DEVICE_ID,null));
-
         sharedPrefEditor.apply();
     }
 
@@ -171,8 +167,9 @@ public class PodNotify {
         return sharedPref.getString("ssoHost",null);
     }
 
-    public static String getDeviceId() {
-        return sharedPref.getString("deviceId",null);
+    public static String getDeviceId(Context context) {
+        return context.getApplicationContext().getSharedPreferences(
+                AsyncConstant.Constants.PREFERENCE,Context.MODE_PRIVATE).getString(AsyncConstant.Constants.DEVICE_ID,null);
     }
 
     public static void setApplication(Context context){

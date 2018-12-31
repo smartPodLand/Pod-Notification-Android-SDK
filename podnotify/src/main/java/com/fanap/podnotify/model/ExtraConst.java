@@ -31,7 +31,8 @@ public abstract class ExtraConst {
             Constants.SERVICE_MESSAGE_EVENT,
             Constants.CHANNEL_CREATED,
             Constants.ASYNC_CLOSED,
-            Constants.SERVICE_INSTANCE_ID_EVENT
+            Constants.SERVICE_INSTANCE_ID_EVENT,
+            Constants.SERVICE_RESTART_EVENT
 
     })
 
@@ -51,6 +52,7 @@ public abstract class ExtraConst {
 
         String SERVICE_MESSAGE_EVENT = "com.fanap.podnotify.MESSAGING_EVENT";
         String SERVICE_INSTANCE_ID_EVENT = "com.fanap.podnotify.INSTANCE_ID_EVENT";
+        String SERVICE_RESTART_EVENT = "com.fanap.podnotify.RestartNotifService";
         String CHANNEL_CREATED = "CHANNEL_CREATED";
         String ASYNC_CLOSED = "ASYNC_CLOSED";
     }

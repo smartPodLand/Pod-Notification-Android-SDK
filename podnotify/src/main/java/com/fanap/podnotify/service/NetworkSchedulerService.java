@@ -18,7 +18,7 @@ import com.fanap.podnotify.receiver.StartServiceReciver;
 /**
  * Created by ArvinRokni
  * on Mon, 17 December 2018 at 12:45 PM.
-*/
+ */
 
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -61,13 +61,14 @@ public class NetworkSchedulerService extends JobService implements
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
-        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        task();
+        if (isConnected)
+            task();
     }
 
     private void task() {
         Intent intent1 = new Intent(getApplicationContext(), StartServiceReciver.class);
         PendingIntent pendingIntent1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+100,pendingIntent1);
     }
 }

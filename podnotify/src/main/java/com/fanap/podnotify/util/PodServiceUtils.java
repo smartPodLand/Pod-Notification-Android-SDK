@@ -33,6 +33,7 @@ public class PodServiceUtils {
     public static void startService(Context context, Async async){
         if( async != null) {
                 try {
+                    async.setReconnectOnClose(false);
                     if (async.getState() !=null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN") )) {
                         try {
                             async.logOut();
@@ -41,7 +42,7 @@ public class PodServiceUtils {
                         }
                     }
                     async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
-                            PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId());
+                            PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId(context.getApplicationContext()));
                 } catch (Exception e) {
                     Log.e("AsyncConnect", e.getMessage());
                 }
@@ -57,13 +58,13 @@ public class PodServiceUtils {
     public static void handShake(Context applicationContext, String messageId, String senderId, Content.Type type) {
         Async async = Async.getInstance(applicationContext);
         async.sendMessage(
-                makeRequest(messageId,async.getPeerId(),senderId,type),
+                makeRequest(applicationContext,messageId,async.getPeerId(),senderId,type),
                 AsyncMessageType.MessageType.MESSAGE_ACK_NEEDED);
 
         Log.i(TAG, "message sent.");
     }
 
-    private static String makeRequest(String messageId, String receiverId, String senderId, Content.Type type) {
+    private static String makeRequest(Context context, String messageId, String receiverId, String senderId, Content.Type type) {
 
         return JsonUtil.getJson(new Request()
                 .setContent(
@@ -78,7 +79,7 @@ public class PodServiceUtils {
                                         .setType(type.getValue())
                                         .setToken(PodNotify.getToken())
                                         .setAppId(PodNotify.getAppId())
-                                        .setDeviceId(PodNotify.getDeviceId())
+                                        .setDeviceId(PodNotify.getDeviceId(context.getApplicationContext()))
                                         .build()))
                 .setMessageType(MESSAGE_TYPE)
                 .setServiceName(SET_STATUS_PUSH));
