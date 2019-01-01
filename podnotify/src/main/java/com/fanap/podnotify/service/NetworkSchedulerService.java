@@ -37,25 +37,34 @@ public class NetworkSchedulerService extends JobService implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        try {
+            registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        } catch (Exception ignored){
+        }
         return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        unregisterReceiver(mConnectivityReceiver);
+        try {
+            unregisterReceiver(mConnectivityReceiver);
+        } catch (Exception ignored){}
         super.onDestroy();
     }
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        try {
+            registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }catch (Exception ignored){}
         return true;
     }
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        unregisterReceiver(mConnectivityReceiver);
+        try {
+            unregisterReceiver(mConnectivityReceiver);
+        } catch (Exception ignored){}
         return true;
     }
 

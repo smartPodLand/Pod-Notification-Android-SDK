@@ -5,8 +5,10 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 
 import com.fanap.podasync.Async;
+import com.fanap.podnotify.model.ExtraConst;
 import com.fanap.podnotify.model.Notification;
 import com.fanap.podnotify.util.PodServiceUtils;
+import com.fanap.podnotify.util.SharedPref;
 
 /**
  * Created by ArvinRokni
@@ -21,6 +23,7 @@ public class JobNotifService extends JobService {
 
     public JobNotifService() {
     }
+
 
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
@@ -47,6 +50,7 @@ public class JobNotifService extends JobService {
     @Override
     public void onCreate() {
         async = Async.getInstance(getApplicationContext());
+
     }
 
 

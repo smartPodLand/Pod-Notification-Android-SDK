@@ -16,6 +16,7 @@ import com.fanap.podnotify.PodNotificationListener;
 import com.fanap.podnotify.PodNotify;
 import com.fanap.podnotify.R;
 import com.fanap.podnotify.model.Content;
+import com.fanap.podnotify.model.ExtraConst;
 import com.fanap.podnotify.model.Notification;
 import com.fanap.podnotify.model.Request;
 
@@ -32,20 +33,21 @@ public class PodServiceUtils {
 
     public static void startService(Context context, Async async){
         if( async != null) {
-                try {
-                    async.setReconnectOnClose(false);
-                    if (async.getState() !=null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN") )) {
-                        try {
-                            async.logOut();
-                        } catch (Exception ignored) {
-                            async.addListener(new PodNotificationListener(context));
-                        }
+            try {
+                async.setReconnectOnClose(false);
+                if (async.getState() !=null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN") )) {
+                    try {
+                        async.logOut();
+                        async.removeListener(PodNotificationListener.getInstance(context));
+                    } catch (Exception ignored) {
                     }
-                    async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
-                            PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId(context.getApplicationContext()));
-                } catch (Exception e) {
-                    Log.e("AsyncConnect", e.getMessage());
                 }
+                async.addListener(PodNotificationListener.getInstance(context));
+                async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
+                        PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId(context.getApplicationContext()));
+            } catch (Exception e) {
+                Log.e("AsyncConnect", e.getMessage());
+            }
         }
     }
 
@@ -138,5 +140,9 @@ public class PodServiceUtils {
 
     public static void doFirstTimeHandShake(Context context) {
         handShake(context,null,null,Content.Type.FIRST_TIME);
+    }
+
+    private class StateObserver{
+
     }
 }

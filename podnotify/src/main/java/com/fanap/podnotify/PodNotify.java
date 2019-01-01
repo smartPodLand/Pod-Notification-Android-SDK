@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.fanap.podasync.Async;
 import com.fanap.podasync.model.AsyncConstant;
+import com.fanap.podnotify.model.ExtraConst;
 import com.fanap.podnotify.receiver.StartServiceReciver;
 import com.fanap.podnotify.service.JobNotifService;
 import com.fanap.podnotify.service.NetworkSchedulerService;
@@ -93,12 +94,14 @@ public class PodNotify {
     }
 
     public void start(Context context){
-            scheduleService(context);
+//        scheduleService(context);
+        if(!sharedPref.getBoolean(ExtraConst.Constants.POD_NOTIF_STARTED,false)) {
+            sharedPref.edit().putBoolean(ExtraConst.Constants.POD_NOTIF_STARTED,true).apply();
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 scheduleNetworkService(context);
             }
-
+        }
     }
 
     private void scheduleService(Context context){

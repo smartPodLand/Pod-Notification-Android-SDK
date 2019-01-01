@@ -19,6 +19,8 @@ public abstract class ExtraConst {
 
 
     @StringDef({
+            Constants.LISTENER_ADDED,
+            Constants.POD_NOTIF_STARTED,
             Constants.SOCKET_SERVER_ADDRESS,
             Constants.APP_ID,
             Constants.SERVER_NAME,
@@ -38,6 +40,9 @@ public abstract class ExtraConst {
 
     @Retention(RetentionPolicy.SOURCE)
     public @interface Constants {
+
+        String POD_NOTIF_STARTED = "POD_NOTIF_STARTED";
+        String LISTENER_ADDED = "LISTENER_ADDED";
         String SOCKET_SERVER_ADDRESS = "SOCKET_SERVER_ADDRESS";
         String APP_ID = "APP_ID";
         String SERVER_NAME = "SERVER_NAME";

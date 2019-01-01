@@ -28,10 +28,10 @@ public class Content {
     }
 
     public enum Type{
-        FIRST_TIME(0),
-        DELIVERD(1),
-        OPEN(2),
-        DISMISS(3);
+        FIRST_TIME(10),
+        DELIVERED(11),
+        OPEN(12),
+        DISMISS(13);
 
         int val;
 
