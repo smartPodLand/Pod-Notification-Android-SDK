@@ -10,7 +10,6 @@ import android.util.Log;
 
 import com.fanap.podasync.Async;
 import com.fanap.podasync.AsyncListener;
-import com.fanap.podnotify.model.ExtraConst;
 import com.fanap.podnotify.util.PodServiceUtils;
 import com.fanap.podnotify.util.SharedPref;
 
