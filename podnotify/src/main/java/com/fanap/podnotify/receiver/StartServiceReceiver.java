@@ -17,8 +17,7 @@ import com.fanap.podnotify.service.NotifService;
  * on Mon, 17 December 2018 at 12:45 PM.
 */
 
-
-public class StartServiceReciver extends BroadcastReceiver {
+public class StartServiceReceiver extends BroadcastReceiver {
 
     private static final int NOTIF_JOB_ID = 604;
 

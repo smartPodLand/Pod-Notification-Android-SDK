@@ -19,32 +19,6 @@ public class Content {
     private String sdkType ;
 
 
-    public String getSdkType() {
-        return sdkType;
-    }
-
-    public void setSdkType(String sdkType) {
-        this.sdkType = sdkType;
-    }
-
-    public enum Type{
-        FIRST_TIME(10),
-        DELIVERED(11),
-        OPEN(12),
-        DISMISS(13);
-
-        int val;
-
-        Type(int val) {
-            this.val = val;
-        }
-
-        public int getValue() {
-            return val;
-        }
-    }
-
-
     public Content(int type, String messageId, String senderId, String receiverId, String info,
                    String token, String appId, String deviceId,String sdkType) {
         this.type = type;
@@ -59,7 +33,7 @@ public class Content {
 
     }
 
-    public Content() {
+    private Content() {
     }
 
     public static class builder{
@@ -180,5 +154,30 @@ public class Content {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public String getSdkType() {
+        return sdkType;
+    }
+
+    public void setSdkType(String sdkType) {
+        this.sdkType = sdkType;
+    }
+
+    public enum Type{
+        FIRST_TIME(10),
+        DELIVERED(11),
+        OPEN(12),
+        DISMISS(13);
+
+        int val;
+
+        Type(int val) {
+            this.val = val;
+        }
+
+        public int getValue() {
+            return val;
+        }
     }
 }

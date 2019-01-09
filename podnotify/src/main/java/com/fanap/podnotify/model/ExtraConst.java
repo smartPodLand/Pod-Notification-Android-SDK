@@ -32,9 +32,9 @@ public abstract class ExtraConst {
             Constants.CONN_STATE,
             Constants.SERVICE_MESSAGE_EVENT,
             Constants.CHANNEL_CREATED,
-            Constants.ASYNC_CLOSED,
             Constants.SERVICE_INSTANCE_ID_EVENT,
-            Constants.SERVICE_RESTART_EVENT
+            Constants.SERVICE_RESTART_EVENT,
+            Constants.NOTIFICATION_ACTION
 
     })
 
@@ -49,16 +49,17 @@ public abstract class ExtraConst {
         String TOKEN = "TOKEN";
         String SSO_HOST = "SSO_HOST";
         String DEVICE_ID = "DEVICE_ID";
-
         String MESSAGE_DATA_KEY = "MESSAGE_DATA";
         String PEER_ID_DATA_KEY = "PEER_ID_DATA";
-
         String CONN_STATE = "CONNECTION_STATE";
-
         String SERVICE_MESSAGE_EVENT = "com.fanap.podnotify.MESSAGING_EVENT";
         String SERVICE_INSTANCE_ID_EVENT = "com.fanap.podnotify.INSTANCE_ID_EVENT";
         String SERVICE_RESTART_EVENT = "com.fanap.podnotify.RestartNotifService";
         String CHANNEL_CREATED = "CHANNEL_CREATED";
-        String ASYNC_CLOSED = "ASYNC_CLOSED";
+        String NOTIFICATION_ID = "NOTIFICATION_ID";
+        String NOTIFICATION_SENDER_ID = "NOTIFICATION_SENDER_ID";
+        String NOTIFICATION_ACTION = "NOTIFICATION_ACTION";
+        String NOTIFICATION_ACTION_OPEN = "NOTIFICATION_OPEN";
+        String NOTIFICATION_ACTION_DISMISS = "NOTIFICATION_DISMISS";
     }
 }

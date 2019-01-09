@@ -14,13 +14,6 @@ public class Info {
     private String model;
     private SDKType sdkType = SDKType.ANDROID;
 
-    public enum SDKType{
-        ANDROID,
-        IOS,
-        WEB
-    }
-
-
     public static class builder{
         private Double lat;
         private Double lng;
@@ -120,5 +113,11 @@ public class Info {
 
     public void setSdkType(SDKType sdkType) {
         this.sdkType = sdkType;
+    }
+
+    public enum SDKType{
+        ANDROID,
+        IOS,
+        WEB
     }
 }

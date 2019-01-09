@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.fanap.podasync.Async;
 import com.fanap.podasync.AsyncListener;
+import com.fanap.podnotify.model.AsyncConst;
 import com.fanap.podnotify.util.PodServiceUtils;
 import com.fanap.podnotify.util.SharedPref;
 
@@ -27,45 +28,36 @@ public class PodNotificationListener implements AsyncListener {
 
     private Context context;
     private ServiceConnection connection;
-    @SuppressLint("StaticFieldLeak")
-    private static PodNotificationListener instance;
-
-    public static PodNotificationListener getInstance(Context context){
-        if (instance == null){
-            instance = new PodNotificationListener(context);
-        }
-        return instance;
-    }
 
     public PodNotificationListener(Context context) {
         this.context = context;
         this.connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-
+                //not used
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-
+                //not used
             }
         };
     }
 
     @Override
     public void onReceivedMessage(String textMessage){
-        Log.i(TAG,"message: " + textMessage);
         PodServiceUtils.callOnMessageReceived(context, connection, textMessage);
+        Log.i(TAG,"message: " + textMessage);
     }
 
     @Override
     public void onStateChanged(String state) {
         Log.i(TAG,state);
-        if (state.equals("ASYNC_READY")){
+        if (state.equals(AsyncConst.Constants.ASYNC_READY)){
             String pid = Async.getInstance(context).getPeerId();
             PodServiceUtils.callOnPeerIdChanged(context,connection,pid);
             SharedPreferences sharedPreferences = SharedPref.getInstance(context);
-            String handShakeNeededKey = PodNotify.getAppId() + "handshaked";
+            String handShakeNeededKey = PodNotify.getAppId() + "handshake";
             if (!sharedPreferences.getString(handShakeNeededKey, "").equals(pid)) {
                 sharedPreferences.edit().putString(handShakeNeededKey, pid).apply();
                 PodServiceUtils.doFirstTimeHandShake(context);

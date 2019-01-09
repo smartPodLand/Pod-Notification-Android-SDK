@@ -15,8 +15,7 @@ import android.util.Log;
 
 import com.fanap.podasync.Async;
 import com.fanap.podasync.model.AsyncConstant;
-import com.fanap.podnotify.model.ExtraConst;
-import com.fanap.podnotify.receiver.StartServiceReciver;
+import com.fanap.podnotify.receiver.StartServiceReceiver;
 import com.fanap.podnotify.service.JobNotifService;
 import com.fanap.podnotify.service.NetworkSchedulerService;
 import com.fanap.podnotify.service.NotifService;
@@ -26,7 +25,6 @@ import com.fanap.podnotify.util.SharedPref;
  * Created by ArvinRokni
  * on Mon, 17 December 2018 at 12:45 PM.
 */
-
 
 public class PodNotify {
 
@@ -43,7 +41,7 @@ public class PodNotify {
         private String serverName;
         private String token;
         private String ssoHost;
-//        private String deviceId;
+        private String deviceId;
 
         public builder setSocketServerAddress(String socketServerAddress) {
             this.socketServerAddress = socketServerAddress;
@@ -70,18 +68,18 @@ public class PodNotify {
             return this;
         }
 
-//        public builder setDeviceId(String deviceId) {
-//            this.deviceId = deviceId;
-//            return this;
-//        }
+        public builder setDeviceId(String deviceId) {
+            this.deviceId = deviceId;
+            return this;
+        }
 
         public PodNotify build(Context context){
-            return new PodNotify(context,socketServerAddress,appId,serverName,token,ssoHost);
+            return new PodNotify(context,socketServerAddress,appId,serverName,token,ssoHost,deviceId);
         }
     }
 
     private PodNotify(Context context, String socketServerAddress, String appId, String serverName,
-                     String token, String ssoHost) {
+                     String token, String ssoHost,String deviceId) {
         sharedPref = SharedPref.getInstance(context);
         SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
 
@@ -93,15 +91,16 @@ public class PodNotify {
         sharedPrefEditor.apply();
     }
 
-    public void start(Context context){
-//        scheduleService(context);
-        if(!sharedPref.getBoolean(ExtraConst.Constants.POD_NOTIF_STARTED,false)) {
-            sharedPref.edit().putBoolean(ExtraConst.Constants.POD_NOTIF_STARTED,true).apply();
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                scheduleNetworkService(context);
+    public void start(final Context context){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                scheduleService(context);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    scheduleNetworkService(context);
+                }
             }
-        }
+        }).start();
     }
 
     private void scheduleService(Context context){
@@ -134,6 +133,7 @@ public class PodNotify {
     private void scheduleNetworkService(Context context) {
         JobInfo myJob = new JobInfo.Builder(SCHEDULER_JOB_ID, new ComponentName(context, NetworkSchedulerService.class))
                 .setMinimumLatency(1000)
+                .setOverrideDeadline(2000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPersisted(true)
                 .build();
@@ -142,12 +142,6 @@ public class PodNotify {
         jobScheduler.cancelAll();
         jobScheduler.schedule(myJob);
 
-        try {
-            Intent startServiceIntent = new Intent(context, NetworkSchedulerService.class);
-            context.startService(startServiceIntent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static String getSocketServerAddress() {
@@ -180,7 +174,7 @@ public class PodNotify {
             IntentFilter intentFilterNotif = new IntentFilter();
             intentFilterNotif.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             intentFilterNotif.addAction("android.intent.action.BOOT_COMPLETED");
-            context.registerReceiver(new StartServiceReciver(), intentFilterNotif);
+            context.getApplicationContext().registerReceiver(new StartServiceReceiver(), intentFilterNotif);
         }
     }
 

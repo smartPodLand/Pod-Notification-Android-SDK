@@ -15,10 +15,6 @@ public class PodMessagingService extends PodAbsMessagingService {
 
     @Override
     public void onMessageReceived(Notification notification) {
-        String messageId = String.valueOf(notification.getMessageId());
-        String senderId = notification.getSenderId();
-
-        PodServiceUtils.handShake(getApplicationContext(), messageId, senderId, Content.Type.DELIVERED);
         PodServiceUtils.showNotification(getApplicationContext(), notification);
     }
 }

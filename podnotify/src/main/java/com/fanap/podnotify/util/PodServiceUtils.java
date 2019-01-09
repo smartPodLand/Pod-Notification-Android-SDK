@@ -2,6 +2,7 @@ package com.fanap.podnotify.util;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -15,10 +16,11 @@ import com.fanap.podasync.util.JsonUtil;
 import com.fanap.podnotify.PodNotificationListener;
 import com.fanap.podnotify.PodNotify;
 import com.fanap.podnotify.R;
+import com.fanap.podnotify.model.AsyncConst;
 import com.fanap.podnotify.model.Content;
-import com.fanap.podnotify.model.ExtraConst;
 import com.fanap.podnotify.model.Notification;
 import com.fanap.podnotify.model.Request;
+import com.fanap.podnotify.receiver.NotificationActionReceiver;
 
 import java.util.Random;
 
@@ -31,18 +33,37 @@ public class PodServiceUtils {
     private static final String SET_STATUS_PUSH = "SetStatusPush";
     private static final int MESSAGE_TYPE= 547;
 
-    public static void startService(Context context, Async async){
+    private PodNotificationListener listener;
+    private Async async;
+
+    public PodServiceUtils(Async async,PodNotificationListener listener) {
+        this.listener = listener;
+        this.async = async;
+    }
+
+    private PodServiceUtils(){
+    }
+
+    public void startService(Context context){
         if( async != null) {
             try {
-                async.setReconnectOnClose(false);
-                if (async.getState() !=null && (async.getState().equals("ASYNC_READY") || async.getState().equals("OPEN") )) {
+                async.setReconnectOnClose(true);
+                if (async.getState() !=null && async.getState().equals(AsyncConst.Constants.ASYNC_READY)) {
                     try {
                         async.logOut();
-                        async.removeListener(PodNotificationListener.getInstance(context));
+                        async.removeListener(listener);
                     } catch (Exception ignored) {
+                        Log.i(TAG, "socket was not open!");
+                    }
+                } else if (async.getState() !=null && async.getState().equals(AsyncConst.Constants.OPEN)) {
+                    try {
+                        async.closeSocket();
+                        async.removeListener(listener);
+                    } catch (Exception ignored) {
+                        Log.i(TAG, "socket was not open!");
                     }
                 }
-                async.addListener(PodNotificationListener.getInstance(context));
+                async.addListener(listener);
                 async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
                         PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId(context.getApplicationContext()));
             } catch (Exception e) {
@@ -51,9 +72,16 @@ public class PodServiceUtils {
         }
     }
 
-    public static void stopService(Async async) {
+    public void stopService() {
         if( async != null) {
             async.setReconnectOnClose(false);
+            if (listener != null)
+                async.removeListener(listener);
+            try{
+                async.closeSocket();
+            } catch (Exception ignored){
+                Log.i(TAG, "socket was not open!");
+            }
         }
     }
 
@@ -96,19 +124,34 @@ public class PodServiceUtils {
 
             SharedPref.getInstance(context).edit().putBoolean(Constants.CHANNEL_CREATED,true).apply();
 
-            NotificationChannel channel = new NotificationChannel(DEFAULT_ID,
-                    "DEFAULT", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(DEFAULT_ID, DEFAULT_ID, NotificationManager.IMPORTANCE_DEFAULT);
+            assert manager != null;
             manager.createNotificationChannel(channel);
         }
+
+        int notificationId = new Random().nextInt(1000);
+        Intent openIntent = new Intent(context, NotificationActionReceiver.class);
+        openIntent.putExtra(Constants.NOTIFICATION_ACTION,Constants.NOTIFICATION_ACTION_OPEN);
+        openIntent.putExtra(Constants.NOTIFICATION_ID, notification.getMessageId());
+        openIntent.putExtra(Constants.NOTIFICATION_SENDER_ID, notification.getSenderId());
+        PendingIntent pendingOpenIntent = PendingIntent.getBroadcast(context,notificationId,openIntent,0);
+
+        Intent dismissIntent = new Intent(context, NotificationActionReceiver.class);
+        dismissIntent.putExtra(Constants.NOTIFICATION_ACTION,Constants.NOTIFICATION_ACTION_DISMISS);
+        openIntent.putExtra(Constants.NOTIFICATION_ID, notification.getMessageId());
+        openIntent.putExtra(Constants.NOTIFICATION_SENDER_ID, notification.getSenderId());
+        PendingIntent pendingDismissIntent = PendingIntent.getBroadcast(context,notificationId,openIntent,0);
 
         android.app.Notification notificationCompat = new NotificationCompat.Builder(context, DEFAULT_ID)
                 .setContentTitle(notification.getTitle())
                 .setContentText(notification.getText())
                 .setExtras(new Bundle((ClassLoader) notification.getExtras()))
                 .setSmallIcon(R.drawable.notification)
+                .setContentIntent(pendingOpenIntent)
+                .setDeleteIntent(pendingDismissIntent)
                 .build();
 
-        int notificationId = new Random().nextInt(1000);
+        assert manager != null;
         manager.notify(notificationId, notificationCompat);
         return notificationId;
     }
@@ -140,9 +183,5 @@ public class PodServiceUtils {
 
     public static void doFirstTimeHandShake(Context context) {
         handShake(context,null,null,Content.Type.FIRST_TIME);
-    }
-
-    private class StateObserver{
-
     }
 }

@@ -3,17 +3,19 @@ package com.fanap.podnotify.service;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.app.job.JobInfo;
 import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
 import android.app.job.JobService;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Build;
+import android.util.Log;
 
 import com.fanap.podnotify.receiver.ConnectivityReceiver;
-import com.fanap.podnotify.receiver.StartServiceReciver;
 
 /**
  * Created by ArvinRokni
@@ -26,9 +28,10 @@ public class NetworkSchedulerService extends JobService implements
         ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = NetworkSchedulerService.class.getSimpleName();
+    private static final int NOTIF_JOB_ID = 604;
 
     private ConnectivityReceiver mConnectivityReceiver;
-    AlarmManager alarmManager;
+    
     @Override
     public void onCreate() {
         super.onCreate();
@@ -37,19 +40,8 @@ public class NetworkSchedulerService extends JobService implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        try {
-            registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        } catch (Exception ignored){
-        }
-        return START_NOT_STICKY;
-    }
 
-    @Override
-    public void onDestroy() {
-        try {
-            unregisterReceiver(mConnectivityReceiver);
-        } catch (Exception ignored){}
-        super.onDestroy();
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -71,13 +63,32 @@ public class NetworkSchedulerService extends JobService implements
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         if (isConnected)
-            task();
+            task(getApplicationContext());
     }
 
-    private void task() {
-        Intent intent1 = new Intent(getApplicationContext(), StartServiceReciver.class);
-        PendingIntent pendingIntent1 = PendingIntent.getBroadcast(getApplicationContext(), 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
-        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+100,pendingIntent1);
+    private void task(Context context){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Intent serviceIntent = new Intent(context, NotifService.class);
+            context.stopService(serviceIntent);
+            context.startService(serviceIntent);
+        } else {
+            ComponentName componentName = new ComponentName(context, JobNotifService.class);
+            JobInfo jobInfo = new JobInfo.Builder(NOTIF_JOB_ID, componentName)
+                    .setPersisted(true)
+                    .setMinimumLatency(1000)
+                    .build();
+
+            JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            int resultCode = 0;
+            if (jobScheduler != null) {
+                jobScheduler.cancelAll();
+                resultCode = jobScheduler.schedule(jobInfo);
+            }
+            if (resultCode == JobScheduler.RESULT_SUCCESS) {
+                Log.d(TAG, "NotifJob scheduled!");
+            } else {
+                Log.d(TAG, "NotifJob not scheduled");
+            }
+        }
     }
 }

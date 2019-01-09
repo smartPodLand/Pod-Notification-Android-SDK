@@ -11,7 +11,6 @@ import android.net.NetworkInfo;
  * on Mon, 17 December 2018 at 12:45 PM.
 */
 
-
 public class ConnectivityReceiver extends BroadcastReceiver {
 
     private ConnectivityReceiverListener mConnectivityReceiverListener;
@@ -22,7 +21,6 @@ public class ConnectivityReceiver extends BroadcastReceiver {
     public ConnectivityReceiver(ConnectivityReceiverListener listener) {
         mConnectivityReceiverListener = listener;
     }
-
 
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -13,7 +13,6 @@ public class PodInstanceIdService extends PodAbsInstanceIdService {
     @Override
     public void onPeerIdChanged(String peerId) {
         //TODO: some automation for user notif!
-//        stopSelf();
     }
 
 

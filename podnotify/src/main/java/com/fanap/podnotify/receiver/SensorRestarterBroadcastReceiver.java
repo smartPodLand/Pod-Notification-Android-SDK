@@ -13,6 +13,7 @@ import com.fanap.podnotify.service.NotifService;
  * Created by ArvinRokni
  * on Mon, 24 December 2018 at 11:40 AM.
 */
+
 public class SensorRestarterBroadcastReceiver extends BroadcastReceiver {
 
     private static final int REQ_COD = 48;
