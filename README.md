@@ -98,6 +98,3 @@ public class Notification {
     // Getters and setters for fields.
 }
 ```
-
-## Contact me
-If you have ideas or feedback, feel free to open up issues, and/or [contact me](mailto:hi@arvinrokni.ir).
