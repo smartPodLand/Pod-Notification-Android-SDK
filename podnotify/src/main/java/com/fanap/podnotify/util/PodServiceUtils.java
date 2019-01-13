@@ -51,18 +51,17 @@ public class PodServiceUtils {
                 if (async.getState() !=null && async.getState().equals(AsyncConst.Constants.ASYNC_READY)) {
                     try {
                         async.logOut();
-                        async.removeListener(listener);
                     } catch (Exception ignored) {
                         Log.i(TAG, "socket was not open!");
                     }
                 } else if (async.getState() !=null && async.getState().equals(AsyncConst.Constants.OPEN)) {
                     try {
                         async.closeSocket();
-                        async.removeListener(listener);
                     } catch (Exception ignored) {
                         Log.i(TAG, "socket was not open!");
                     }
                 }
+                async.clearListeners();
                 async.addListener(listener);
                 async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
                         PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId(context.getApplicationContext()));

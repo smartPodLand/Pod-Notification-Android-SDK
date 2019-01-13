@@ -1,6 +1,8 @@
 package com.fanap.podnotification;
 
 import android.arch.lifecycle.Observer;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,16 +11,22 @@ import android.widget.TextView;
 
 import com.fanap.podnotify.PodNotify;
 
+import java.util.UUID;
+
 public class MainActivity extends AppCompatActivity {
 
     private TextView peerId;
     private TextView deviceId;
     private TextView appId;
 
+    private  String androidId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         peerId = findViewById(R.id.peer_id);
         appId = findViewById(R.id.app_id);
@@ -30,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 .setSocketServerAddress(getString(R.string.socket_server_address))
                 .setSsoHost(getString(R.string.sso_host))
                 .setToken(getString(R.string.server_token))
+                .setDeviceId(androidId)
                 .build(getApplicationContext());
 
         podNotify.start(getApplicationContext());
@@ -45,7 +54,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 }

@@ -25,5 +25,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.fanap.podasync:podasync:0.0.8.11'
+    implementation 'com.fanap.podasync:podasync:0.2.5.0'
 }
