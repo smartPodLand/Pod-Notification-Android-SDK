@@ -8,7 +8,7 @@ import com.fanap.podnotify.model.Content;
 import com.fanap.podnotify.model.ExtraConst;
 import com.fanap.podnotify.util.PodServiceUtils;
 
-public class NotificationActionReceiver extends BroadcastReceiver {
+public class DismissNotificationActionReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -16,9 +16,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         String id = intent.getStringExtra(ExtraConst.Constants.NOTIFICATION_ID);
         String senderId = intent.getStringExtra(ExtraConst.Constants.NOTIFICATION_SENDER_ID);
 
-        if (action.equals(ExtraConst.Constants.NOTIFICATION_ACTION_OPEN)){
-            PodServiceUtils.handShake(context.getApplicationContext(), id, senderId, Content.Type.OPEN);
-        } else if (action.equals(ExtraConst.Constants.NOTIFICATION_ACTION_DISMISS)){
+        if (action.equals(ExtraConst.Constants.NOTIFICATION_ACTION_DISMISS)){
             PodServiceUtils.handShake(context.getApplicationContext(), id, senderId, Content.Type.DISMISS);
         }
     }

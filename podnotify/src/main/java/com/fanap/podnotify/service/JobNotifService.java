@@ -48,12 +48,13 @@ public class JobNotifService extends JobService {
     @Override
     public boolean onStopJob(final JobParameters jobParameters) {
 
+        jobFinished(jobParameters,true);
         return true;
     }
 
     @Override
     public void onCreate() {
-        Async async = Async.getInstance(getApplicationContext());
+        Async async = Async.getInstance(JobNotifService.this);
         PodNotificationListener podNotificationListener = new PodNotificationListener(JobNotifService.this);
         serviceUtils = new PodServiceUtils(async, podNotificationListener);
     }

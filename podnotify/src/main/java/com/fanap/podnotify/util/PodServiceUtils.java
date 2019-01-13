@@ -20,7 +20,8 @@ import com.fanap.podnotify.model.AsyncConst;
 import com.fanap.podnotify.model.Content;
 import com.fanap.podnotify.model.Notification;
 import com.fanap.podnotify.model.Request;
-import com.fanap.podnotify.receiver.NotificationActionReceiver;
+import com.fanap.podnotify.receiver.DismissNotificationActionReceiver;
+import com.fanap.podnotify.receiver.OpenNotificationActionReceiver;
 
 import java.util.Random;
 
@@ -129,17 +130,18 @@ public class PodServiceUtils {
         }
 
         int notificationId = new Random().nextInt(1000);
-        Intent openIntent = new Intent(context, NotificationActionReceiver.class);
-        openIntent.putExtra(Constants.NOTIFICATION_ACTION,Constants.NOTIFICATION_ACTION_OPEN);
-        openIntent.putExtra(Constants.NOTIFICATION_ID, notification.getMessageId());
+
+        Intent openIntent = new Intent(context, OpenNotificationActionReceiver.class);
+        openIntent.putExtra(Constants.NOTIFICATION_ACTION, Constants.NOTIFICATION_ACTION_OPEN);
+        openIntent.putExtra(Constants.NOTIFICATION_ID, String.valueOf(notification.getMessageId()));
         openIntent.putExtra(Constants.NOTIFICATION_SENDER_ID, notification.getSenderId());
         PendingIntent pendingOpenIntent = PendingIntent.getBroadcast(context,notificationId,openIntent,0);
 
-        Intent dismissIntent = new Intent(context, NotificationActionReceiver.class);
-        dismissIntent.putExtra(Constants.NOTIFICATION_ACTION,Constants.NOTIFICATION_ACTION_DISMISS);
-        openIntent.putExtra(Constants.NOTIFICATION_ID, notification.getMessageId());
-        openIntent.putExtra(Constants.NOTIFICATION_SENDER_ID, notification.getSenderId());
-        PendingIntent pendingDismissIntent = PendingIntent.getBroadcast(context,notificationId,openIntent,0);
+        Intent dismissIntent = new Intent(context, DismissNotificationActionReceiver.class);
+        dismissIntent.putExtra(Constants.NOTIFICATION_ACTION, Constants.NOTIFICATION_ACTION_DISMISS);
+        dismissIntent.putExtra(Constants.NOTIFICATION_ID, String.valueOf(notification.getMessageId()));
+        dismissIntent.putExtra(Constants.NOTIFICATION_SENDER_ID, notification.getSenderId());
+        PendingIntent pendingDismissIntent = PendingIntent.getBroadcast(context,notificationId,dismissIntent,0);
 
         android.app.Notification notificationCompat = new NotificationCompat.Builder(context, DEFAULT_ID)
                 .setContentTitle(notification.getTitle())
