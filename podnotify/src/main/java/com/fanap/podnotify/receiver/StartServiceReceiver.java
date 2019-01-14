@@ -37,7 +37,7 @@ public class StartServiceReceiver extends BroadcastReceiver {
                     .build();
             JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
-            jobScheduler.cancelAll();
+            jobScheduler.cancel(NOTIF_JOB_ID);
             int resultCode = jobScheduler.schedule(jobInfo);
 
             if (resultCode == JobScheduler.RESULT_SUCCESS) {

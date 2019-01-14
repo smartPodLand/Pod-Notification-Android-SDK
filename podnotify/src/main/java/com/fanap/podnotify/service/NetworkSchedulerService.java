@@ -57,6 +57,7 @@ public class NetworkSchedulerService extends JobService implements
         try {
             unregisterReceiver(mConnectivityReceiver);
         } catch (Exception ignored){}
+        jobFinished(params,true);
         return true;
     }
 
@@ -81,7 +82,7 @@ public class NetworkSchedulerService extends JobService implements
             JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
             int resultCode = 0;
             if (jobScheduler != null) {
-                jobScheduler.cancelAll();
+                jobScheduler.cancel(NOTIF_JOB_ID);
                 resultCode = jobScheduler.schedule(jobInfo);
             }
             if (resultCode == JobScheduler.RESULT_SUCCESS) {

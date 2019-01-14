@@ -83,7 +83,7 @@ public class JobNotifService extends JobService {
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         assert jobScheduler != null;
-        jobScheduler.cancelAll();
+        jobScheduler.cancel(SCHEDULER_JOB_ID);
         jobScheduler.schedule(myJob);
     }
 

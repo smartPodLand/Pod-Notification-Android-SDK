@@ -51,6 +51,11 @@
             android:enabled="true"
             android:exported="true" />
 
+        <receiver
+            android:name=".receiver.DismissNotificationActionReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
         <service
             android:name=".service.NotifService"
             android:enabled="true"

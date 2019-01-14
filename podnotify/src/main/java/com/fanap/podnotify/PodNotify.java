@@ -119,7 +119,7 @@ public class PodNotify {
             JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
             int resultCode = 0;
             if (jobScheduler != null) {
-                jobScheduler.cancelAll();
+                jobScheduler.cancel(NOTIF_JOB_ID);
                 resultCode = jobScheduler.schedule(jobInfo);
             }
             if (resultCode == JobScheduler.RESULT_SUCCESS) {
@@ -140,7 +140,7 @@ public class PodNotify {
                 .build();
 
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.cancelAll();
+        jobScheduler.cancel(SCHEDULER_JOB_ID);
         jobScheduler.schedule(myJob);
 
     }

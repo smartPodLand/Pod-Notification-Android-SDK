@@ -150,7 +150,9 @@ public class PodServiceUtils {
                 .setSmallIcon(R.drawable.notification)
                 .setContentIntent(pendingOpenIntent)
                 .setDeleteIntent(pendingDismissIntent)
+                .setAutoCancel(true)
                 .build();
+
 
         assert manager != null;
         manager.notify(notificationId, notificationCompat);
