@@ -14,7 +14,6 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.fanap.podasync.Async;
-import com.fanap.podasync.model.AsyncConstant;
 import com.fanap.podnotify.receiver.StartServiceReceiver;
 import com.fanap.podnotify.service.JobNotifService;
 import com.fanap.podnotify.service.NetworkSchedulerService;
