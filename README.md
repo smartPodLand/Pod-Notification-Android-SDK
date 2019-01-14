@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
                             .setSocketServerAddress("SERVER_SOCKET_ADDRESS")
                             .setSsoHost("SSO_HOST_IF_NEEDED")
                             .setToken("TOKEN")
+                            .setDeviceId("STABLE_DEVICE_ID")
                             .build(); 
     }
 }
