@@ -32,7 +32,7 @@ public class PodNotify {
     private static final int SCHEDULER_JOB_ID = 858;
 
     private static PodNotify instance;
-    private static SharedPreferences sharedPref;
+//    private static SharedPreferences sharedPref;
 
     public static class builder{
         private String socketServerAddress;
@@ -79,7 +79,7 @@ public class PodNotify {
 
     private PodNotify(Context context, String socketServerAddress, String appId, String serverName,
                      String token, String ssoHost,String deviceId) {
-        sharedPref = SharedPref.getInstance(context);
+        SharedPreferences sharedPref = SharedPref.getInstance(context);
         SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
 
         sharedPrefEditor.putString("socketServerAddress",socketServerAddress);
@@ -96,9 +96,9 @@ public class PodNotify {
             @Override
             public void run() {
                 scheduleService(context);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    scheduleNetworkService(context);
-                }
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    scheduleNetworkService(context);
+//                }
             }
         }).start();
     }
@@ -113,6 +113,8 @@ public class PodNotify {
             JobInfo jobInfo = new JobInfo.Builder(NOTIF_JOB_ID, componentName)
                     .setPersisted(true)
                     .setMinimumLatency(1000)
+                    .setOverrideDeadline(2000)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .build();
 
             JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
@@ -132,8 +134,6 @@ public class PodNotify {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void scheduleNetworkService(Context context) {
         JobInfo myJob = new JobInfo.Builder(SCHEDULER_JOB_ID, new ComponentName(context, NetworkSchedulerService.class))
-                .setMinimumLatency(1000)
-                .setOverrideDeadline(2000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPersisted(true)
                 .build();
@@ -144,27 +144,33 @@ public class PodNotify {
 
     }
 
-    public static String getSocketServerAddress() {
+    public static String getSocketServerAddress(Context context) {
+        SharedPreferences sharedPref = SharedPref.getInstance(context);
         return sharedPref.getString("socketServerAddress",null);
     }
 
-    public static String getAppId() {
+    public static String getAppId(Context context) {
+        SharedPreferences sharedPref = SharedPref.getInstance(context);
         return sharedPref.getString("appId", null);
     }
 
-    public static String getServerName() {
+    public static String getServerName(Context context) {
+        SharedPreferences sharedPref = SharedPref.getInstance(context);
         return sharedPref.getString("serverName", null);
     }
 
-    public static String getToken() {
+    public static String getToken(Context context) {
+        SharedPreferences sharedPref = SharedPref.getInstance(context);
         return sharedPref.getString("token",null);
     }
 
-    public static String getSsoHost() {
+    public static String getSsoHost(Context context) {
+        SharedPreferences sharedPref = SharedPref.getInstance(context);
         return sharedPref.getString("ssoHost",null);
     }
 
     public static String getDeviceId(Context context) {
+        SharedPreferences sharedPref = SharedPref.getInstance(context);
         return sharedPref.getString("deviceId",null);
     }
 

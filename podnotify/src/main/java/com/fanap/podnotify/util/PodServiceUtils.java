@@ -37,7 +37,7 @@ public class PodServiceUtils {
     private PodNotificationListener listener;
     private Async async;
 
-    public PodServiceUtils(Async async,PodNotificationListener listener) {
+    public PodServiceUtils(Async async, PodNotificationListener listener) {
         this.listener = listener;
         this.async = async;
     }
@@ -64,8 +64,13 @@ public class PodServiceUtils {
                         Log.i(TAG, "socket was not open!");
                     }
                 }
-                async.connect(PodNotify.getSocketServerAddress(), PodNotify.getAppId(), PodNotify.getServerName(),
-                        PodNotify.getToken(), PodNotify.getSsoHost(), PodNotify.getDeviceId(context.getApplicationContext()));
+                async.connect(
+                        PodNotify.getSocketServerAddress(context.getApplicationContext()),
+                        PodNotify.getAppId(context.getApplicationContext()),
+                        PodNotify.getServerName(context.getApplicationContext()),
+                        PodNotify.getToken(context.getApplicationContext()),
+                        PodNotify.getSsoHost(context.getApplicationContext()),
+                        PodNotify.getDeviceId(context.getApplicationContext()));
             } catch (Exception e) {
                 Log.e("AsyncConnect", e.getMessage());
             }
@@ -107,15 +112,15 @@ public class PodServiceUtils {
                                         .setReceiverId(receiverId)
                                         .setSenderId(senderId)
                                         .setType(type.getValue())
-                                        .setToken(PodNotify.getToken())
-                                        .setAppId(PodNotify.getAppId())
+                                        .setToken(PodNotify.getToken(context.getApplicationContext()))
+                                        .setAppId(PodNotify.getAppId(context.getApplicationContext()))
                                         .setDeviceId(PodNotify.getDeviceId(context.getApplicationContext()))
                                         .build()))
                 .setMessageType(MESSAGE_TYPE)
                 .setServiceName(SET_STATUS_PUSH));
     }
 
-    public static int showNotification(Context context,Notification notification) {
+    public static int showNotification(Context context, Notification notification) {
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -185,6 +190,6 @@ public class PodServiceUtils {
     }
 
     public static void doFirstTimeHandShake(Context context) {
-        handShake(context,null,null,Content.Type.FIRST_TIME);
+        handShake(context,null,null, Content.Type.FIRST_TIME);
     }
 }

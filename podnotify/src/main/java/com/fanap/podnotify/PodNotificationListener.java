@@ -1,6 +1,5 @@
 package com.fanap.podnotify;
 
-import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
@@ -57,7 +56,7 @@ public class PodNotificationListener implements AsyncListener {
             String pid = Async.getInstance(context).getPeerId();
             PodServiceUtils.callOnPeerIdChanged(context,connection,pid);
             SharedPreferences sharedPreferences = SharedPref.getInstance(context);
-            String handShakeNeededKey = PodNotify.getAppId() + "handshake";
+            String handShakeNeededKey = PodNotify.getAppId(context.getApplicationContext()) + "handshake";
             if (!sharedPreferences.getString(handShakeNeededKey, "").equals(pid)) {
                 sharedPreferences.edit().putString(handShakeNeededKey, pid).apply();
                 PodServiceUtils.doFirstTimeHandShake(context);

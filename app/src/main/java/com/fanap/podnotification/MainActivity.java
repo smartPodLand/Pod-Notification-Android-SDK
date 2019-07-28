@@ -1,17 +1,14 @@
 package com.fanap.podnotification;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.TextView;
 
 import com.fanap.podnotify.PodNotify;
-
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         deviceId = findViewById(R.id.device_id);
 
         final PodNotify podNotify = new PodNotify.builder()
-                .setAppId(getApplicationContext().getPackageName())
+                .setAppId("POD-Chat")
                 .setServerName(getString(R.string.server_name))
                 .setSocketServerAddress(getString(R.string.socket_server_address))
                 .setSsoHost(getString(R.string.sso_host))
@@ -44,13 +41,14 @@ public class MainActivity extends AppCompatActivity {
         podNotify.start(getApplicationContext());
 
         podNotify.getState(getApplicationContext()).observe(MainActivity.this, new Observer<String>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onChanged(@Nullable String s) {
                 MainActivity.this.setTitle(s);
                 deviceId.setText("deviceId: " + podNotify.getDeviceId(MainActivity.this));
                 if (podNotify.getPeerId(getApplicationContext())!=null) {
                     peerId.setText("peerId: " + podNotify.getPeerId(getApplicationContext()));
-                    appId.setText("appId: " + podNotify.getAppId());
+                    appId.setText("appId: " + podNotify.getAppId(getApplicationContext()));
                 }
             }
         });

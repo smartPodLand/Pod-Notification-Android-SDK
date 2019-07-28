@@ -31,7 +31,7 @@ public class NetworkSchedulerService extends JobService implements
     private static final int NOTIF_JOB_ID = 604;
 
     private ConnectivityReceiver mConnectivityReceiver;
-    
+
     @Override
     public void onCreate() {
         super.onCreate();
