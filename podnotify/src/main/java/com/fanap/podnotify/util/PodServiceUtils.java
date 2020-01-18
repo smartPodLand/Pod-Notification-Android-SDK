@@ -11,8 +11,9 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.fanap.podasync.Async;
+import com.fanap.podasync.AsyncListener;
 import com.fanap.podasync.model.AsyncMessageType;
-import com.fanap.podasync.util.JsonUtil;
+import com.fanap.podnotify.util.JsonUtil;
 import com.fanap.podnotify.PodNotificationListener;
 import com.fanap.podnotify.PodNotify;
 import com.fanap.podnotify.R;
@@ -45,12 +46,23 @@ public class PodServiceUtils {
     private PodServiceUtils(){
     }
 
+    private boolean shouldAddListener(){
+        for (AsyncListener asyncListener : async.getSynchronizedListeners()) {
+            if (asyncListener instanceof PodNotificationListener) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void startService(Context context){
         if( async != null) {
             try {
                 async.setReconnectOnClose(true);
-                async.clearListeners();
-                async.addListener(listener);
+//                async.clearListeners();
+                if (shouldAddListener())
+                    async.addListener(listener);
+
                 if (async.getState() !=null && async.getState().equals(AsyncConst.Constants.ASYNC_READY)) {
                     try {
                         async.logOut();
@@ -81,7 +93,8 @@ public class PodServiceUtils {
         if( async != null) {
             async.setReconnectOnClose(false);
             if (listener != null)
-                async.clearListeners();
+//                async.clearListeners();
+                async.removeListener(listener);
             try{
                 async.closeSocket();
             } catch (Exception ignored){
@@ -185,7 +198,10 @@ public class PodServiceUtils {
         try {
             context.unbindService(connection);
         } catch (Exception ignored){}
-        context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+
+        try {
+            context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        } catch (Exception ignored) {}
 
     }
 

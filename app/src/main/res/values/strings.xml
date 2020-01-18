@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">PodNotification</string>
-
-    <string name="socket_server_address">ws://172.16.0.248:8003/ws</string>
-    <string name="server_name">NotificationServer</string>
-    <string name="sso_host">http://accounts.pod.land</string>
-    <string name="server_token">6593fb9bbea74511b4367c3a9418eb13</string>
-</resources>

@@ -3,6 +3,7 @@ package com.fanap.podnotify;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +15,15 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.fanap.podasync.Async;
+import com.fanap.podasync.AsyncListener;
 import com.fanap.podnotify.receiver.StartServiceReceiver;
 import com.fanap.podnotify.service.JobNotifService;
 import com.fanap.podnotify.service.NetworkSchedulerService;
 import com.fanap.podnotify.service.NotifService;
 import com.fanap.podnotify.util.SharedPref;
+
+
+import java.io.IOException;
 
 /**
  * Created by ArvinRokni
@@ -32,7 +37,16 @@ public class PodNotify {
     private static final int SCHEDULER_JOB_ID = 858;
 
     private static PodNotify instance;
-//    private static SharedPreferences sharedPref;
+
+    public void stop(Context context) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.cancel(NOTIF_JOB_ID);
+        } else {
+            Intent serviceIntent = new Intent(context, NotifService.class);
+            context.stopService(serviceIntent);
+        }
+    }
 
     public static class builder{
         private String socketServerAddress;
@@ -188,6 +202,38 @@ public class PodNotify {
     }
 
     public LiveData<String> getState(Context context){
-        return Async.getInstance(context).getStateLiveData();
+
+        final MutableLiveData<String> liveData = new MutableLiveData<>();
+
+        Async.getInstance(context).addListener(new AsyncListener() {
+            @Override
+            public void onReceivedMessage(String textMessage) throws IOException {
+                Log.wtf("onReceivedMessage", textMessage);
+
+            }
+
+            @Override
+            public void onStateChanged(String state) throws IOException {
+                liveData.postValue(state);
+            }
+
+            @Override
+            public void onDisconnected(String textMessage) throws IOException {
+                Log.wtf("onDisconnected", textMessage);
+
+            }
+
+            @Override
+            public void onError(String textMessage) throws IOException {
+                Log.wtf("onError", textMessage);
+            }
+
+            @Override
+            public void handleCallbackError(Throwable cause) throws Exception {
+                Log.wtf("handleCallbackError", cause);
+            }
+        });
+
+        return liveData;
     }
 }

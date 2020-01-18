@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         deviceId = findViewById(R.id.device_id);
 
         final PodNotify podNotify = new PodNotify.builder()
-                .setAppId("POD-Chat")
+                .setAppId("Notif-QC")
                 .setServerName(getString(R.string.server_name))
                 .setSocketServerAddress(getString(R.string.socket_server_address))
                 .setSsoHost(getString(R.string.sso_host))

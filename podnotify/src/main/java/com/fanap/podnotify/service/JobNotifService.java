@@ -65,7 +65,7 @@ public class JobNotifService extends JobService {
             @Override
             public void run() {
                 serviceUtils.stopService();
-                reopen(getApplicationContext());
+//                reopen(getApplicationContext());
             }
         }).start();
 

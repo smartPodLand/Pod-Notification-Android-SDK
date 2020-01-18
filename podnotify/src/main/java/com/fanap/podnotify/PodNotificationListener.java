@@ -52,6 +52,9 @@ public class PodNotificationListener implements AsyncListener {
     @Override
     public void onStateChanged(String state) {
         Log.i(TAG,state);
+
+        SharedPref.getInstance(context).edit().putString("NOTIFICATION_STATE_TO_USE",state).apply();
+
         if (state.equals(AsyncConst.Constants.ASYNC_READY)){
             String pid = Async.getInstance(context).getPeerId();
             PodServiceUtils.callOnPeerIdChanged(context,connection,pid);

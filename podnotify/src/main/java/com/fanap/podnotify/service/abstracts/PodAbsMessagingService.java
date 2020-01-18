@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
-import com.fanap.podasync.util.JsonUtil;
+import com.fanap.podnotify.util.JsonUtil;
 import com.fanap.podnotify.model.Content;
 import com.fanap.podnotify.model.ExtraConst.Constants;
 import com.fanap.podnotify.model.Notification;
